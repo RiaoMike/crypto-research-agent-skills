@@ -1,1 +1,13 @@
 .worktrees/
+__pycache__/
+*.py[cod]
+.venv/
+.install-smoke/
+.coverage
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
