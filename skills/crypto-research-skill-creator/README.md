@@ -73,7 +73,7 @@ It checks structure and contract headings. It cannot decide whether a theorem is
 
 ## Examples are skeletons
 
-`examples/theorem-review` and `examples/literature-search` are intentionally compact patterns, not certified production skills. Before deployment, adapt the scope, sources, threat model, output schema, and behavioral tests to the intended research workflow.
+`examples/theorem-review/EXAMPLE.md` and `examples/literature-search/EXAMPLE.md` are intentionally compact patterns, not certified production skills. They deliberately do not use the `SKILL.md` filename, so recursive harness discovery cannot mistake them for installed skills. Before deployment, copy an example into a new top-level skill directory as `SKILL.md`, then adapt the scope, sources, threat model, output schema, and behavioral tests to the intended research workflow.
 
 ## Portability contract
 

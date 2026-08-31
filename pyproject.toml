@@ -1,6 +1,6 @@
 [project]
 name = "crypto-research-agent-skills"
-version = "0.1.0"
+version = "0.1.1"
 description = "Portable research-grade agent skills for cryptography, ZKP, and lattice research"
 readme = "README.md"
 requires-python = ">=3.10"

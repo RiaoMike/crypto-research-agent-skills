@@ -2,6 +2,11 @@
 
 All notable changes are documented here.
 
+## 0.1.1 — 2026-08-31
+
+- Prevent recursive skill discovery from treating the meta-skill's two structural examples as independently installed skills.
+- Add a regression test that permits `SKILL.md` only at the top level of each canonical skill directory.
+
 ## 0.1.0 — 2026-08-31
 
 - Publish `crypto-research-skill-creator` and twelve cryptography research skills.

@@ -70,6 +70,6 @@ For **create**, return a ready-to-copy skill folder and a validation report. For
 
 Use the examples only as structural guides:
 
-- [theorem-review](examples/theorem-review/SKILL.md)
-- [literature-search](examples/literature-search/SKILL.md)
+- [theorem-review](examples/theorem-review/EXAMPLE.md)
+- [literature-search](examples/literature-search/EXAMPLE.md)
 

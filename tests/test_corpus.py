@@ -27,6 +27,15 @@ class CorpusTests(unittest.TestCase):
         for name in actual:
             self.assertTrue((root / name / "SKILL.md").is_file(), name)
 
+    def test_only_top_level_skill_directories_contain_entrypoints(self) -> None:
+        root = Path(__file__).parents[1] / "skills"
+        nested = sorted(
+            path.relative_to(root).as_posix()
+            for path in root.rglob("SKILL.md")
+            if path.parent.parent != root
+        )
+        self.assertEqual([], nested)
+
 
 if __name__ == "__main__":
     unittest.main()
