@@ -2,7 +2,7 @@
 
 [简体中文](README.zh-CN.md) · [Getting started](docs/getting-started.md) · [Capabilities](docs/capabilities.md) · [Architecture](docs/architecture.md)
 
-Portable, evidence-gated Agent Skills for cryptography, zero-knowledge proofs, and lattice research. The repository includes one skill-creation meta-skill and twelve research skills spanning idea triage, literature, novelty, formal review, parameters, experiments, paper writing, and adversarial pre-review.
+Portable, evidence-gated Agent Skills for cryptography, zero-knowledge proofs, and lattice research. The repository includes one skill-creation meta-skill and fifteen research skills spanning idea triage, literature, novelty, formal review, parameters, experiments, paper writing, venue-specific writing style, and adversarial pre-review.
 
 The suite targets the working discipline expected around leading cryptography and security venues. It does **not** guarantee global novelty, proof correctness, protocol security, reproducibility on untested systems, acceptance, authorship decisions, or autonomous submission. It forbids fabricated citations, proof steps, experiments, and reviewer outcomes.
 
@@ -57,6 +57,7 @@ The orchestrator routes work through the specialized skills and preserves blocke
 - **Discovery:** `crypto-idea-evaluator`, `crypto-literature-search`, `crypto-paper-reader`, `crypto-related-work-synthesis`, `crypto-novelty-check`
 - **Formal and domain review:** `crypto-theorem-review`, `zkp-security-review`, `lattice-parameter-audit`
 - **Evidence and publication:** `crypto-experiment-reproducibility`, `crypto-paper-writing`, `crypto-paper-review`
+- **Venue writing style:** `crypto-venue-paper-writing`, `ccs-writing-style`, `usenixsec-writing-style`
 
 See [the capability map](docs/capabilities.md) for the exact output contracts and boundaries.
 

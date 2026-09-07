@@ -2,7 +2,7 @@
 
 [English](README.md) · [快速开始](docs/getting-started.md) · [能力清单](docs/capabilities.md) · [架构](docs/architecture.md)
 
-这是一套面向密码学、零知识证明和格密码研究的可移植 Agent Skills。项目包含一个技能创建元技能，以及覆盖研究构思、文献、novelty、形式化审查、参数、实验、论文写作和对抗性预审的十二个科研技能。
+这是一套面向密码学、零知识证明和格密码研究的可移植 Agent Skills。项目包含一个技能创建元技能，以及覆盖研究构思、文献、novelty、形式化审查、参数、实验、论文写作、顶会写作风格和对抗性预审的十五个科研技能。
 
 套件以密码学和安全顶会所需的研究纪律为目标，但**不保证**全局新颖性、证明正确性、协议安全、在未测试环境中的可复现性、论文录用、作者资格或自动投稿。任何技能都不得伪造引用、证明步骤、实验或审稿结论。
 
@@ -56,6 +56,7 @@ python scripts/install.py --target custom --dest /path/to/your/harness/skills
 - **发现与综述：** `crypto-idea-evaluator`、`crypto-literature-search`、`crypto-paper-reader`、`crypto-related-work-synthesis`、`crypto-novelty-check`
 - **理论与领域审查：** `crypto-theorem-review`、`zkp-security-review`、`lattice-parameter-audit`
 - **证据与投稿准备：** `crypto-experiment-reproducibility`、`crypto-paper-writing`、`crypto-paper-review`
+- **顶会写作风格：** `crypto-venue-paper-writing`、`ccs-writing-style`、`usenixsec-writing-style`
 
 完整输出能力和边界见[能力清单](docs/capabilities.md)。
 

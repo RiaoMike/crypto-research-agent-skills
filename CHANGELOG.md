@@ -2,6 +2,12 @@
 
 All notable changes are documented here.
 
+## 0.2.0 — 2026-09-07
+
+- Add `crypto-venue-paper-writing`: structure, abstract compression, and de-AI rewriting for top cryptography and security venues, built from revision feedback on real CRYPTO/LNCS manuscripts.
+- Add `ccs-writing-style` and `usenixsec-writing-style`: venue-specific threat-model, claim-calibration, and page-budget guidance adapted from the MIT-licensed Awesome-Journal-Skills collection.
+- Update the corpus test, capability map, and bilingual READMEs for the three new skills.
+
 ## 0.1.1 — 2026-08-31
 
 - Prevent recursive skill discovery from treating the meta-skill's two structural examples as independently installed skills.

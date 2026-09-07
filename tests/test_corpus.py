@@ -15,6 +15,9 @@ EXPECTED_SKILLS = {
     "lattice-parameter-audit",
     "crypto-experiment-reproducibility",
     "crypto-paper-writing",
+    "crypto-venue-paper-writing",
+    "ccs-writing-style",
+    "usenixsec-writing-style",
     "crypto-paper-review",
 }
 

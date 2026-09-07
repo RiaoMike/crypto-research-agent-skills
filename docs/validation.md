@@ -1,12 +1,30 @@
 # Validation Record
 
+## 0.2.0 — 2026-09-07 (Linux, Python 3.14.7)
+
+Added `crypto-venue-paper-writing`, `ccs-writing-style`, and `usenixsec-writing-style` (16 canonical skills total). Results on this machine:
+
+| Check | Result |
+|---|---:|
+| Canonical top-level skills | 16 |
+| Standard-library unit tests | 19 passed, 0 failed |
+| Repository validator | 16 passed, 0 failed |
+| Dry-run install plan | 16 skills, no writes |
+| Skills tree files | 68 |
+| Public Markdown files checked | 80 |
+| Broken local Markdown links | 0 |
+| Exact author-machine path or private-key hits | 0 |
+| ZIP files in source tree | 0 |
+
+## 0.1.0 — 2026-08-31 (Windows)
+
 Date: 2026-08-31
 Release candidate: `v0.1.0`
 Local platform: Windows
 Local Python: 3.14.6
 Local Git: 2.54.0.windows.1
 
-## Results
+### Results
 
 | Check | Result |
 |---|---:|

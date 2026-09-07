@@ -58,6 +58,18 @@ Designs and audits benchmarks, estimators, proof checkers, code artifacts, datas
 
 Builds contribution-led outlines and manuscript sections from verified claims and evidence. It maintains calibrated wording across proven, estimated, measured, reproduced, conjectured, planned, and unavailable results.
 
+### `crypto-venue-paper-writing`
+
+Structures and polishes a cryptography paper for one named top venue (CRYPTO/EUROCRYPT/ASIACRYPT, IEEE S&P, CCS, USENIX, NDSS): venue-specific structure and section budget, four-part abstract under the word cap, de-AI rewriting against a grep-level checklist, calibrated claim language, double-blind compliance, and current-CFP format verification.
+
+### `ccs-writing-style`
+
+Revises an ACM CCS paper for threat-model-first structure, calibrated attack/defense claims, the current CCS page budget, double-blind wording, and adaptive-evaluation honesty, with a claim-to-evidence output diagnosis.
+
+### `usenixsec-writing-style`
+
+Drafts or revises USENIX Security prose with a load-bearing threat model, quantified claim calibration, disclosure narrative woven into the body, page-budget discipline, and plain systems-security register.
+
 ### `crypto-paper-review`
 
 Runs adversarial pre-review across fit, significance, novelty, correctness, security, parameters, evaluation, artifacts, ethics, clarity, and compliance. Findings are severity-ranked and routed to exact repair obligations.
