@@ -59,6 +59,14 @@ The orchestrator routes work through the specialized skills and preserves blocke
 - **Evidence and publication:** `crypto-experiment-reproducibility`, `crypto-paper-writing`, `crypto-paper-review`
 - **Venue writing style:** `crypto-venue-paper-writing`, `ccs-writing-style`, `usenixsec-writing-style`
 
+The three style skills correct two opposite defects that no length cap alone catches: they compress what must be tight (the abstract, the contribution list) and expand what must be deep (the technical overview, the concrete construction). Every threshold is a median or a quartile of a frozen corpus of accepted top-venue papers, cited as `file:line` with its sample size and measurement basis, and two shipped counting instruments measure the manuscript against them.
+
+- **Cryptography and LNCS** (CRYPTO, EUROCRYPT, ASIACRYPT): `crypto-venue-paper-writing` owns the family and the shared corpus-calibrated rules.
+- **Security venues** (ACM CCS, IEEE S&P, NDSS): `ccs-writing-style` owns the register and the family-wide gates.
+- **USENIX Security:** `usenixsec-writing-style` adds the venue-only checks and invokes those gates by name.
+
+A rule is stated once and pointed at, so no rule sentence exists in two skills.
+
 See [the capability map](docs/capabilities.md) for the exact output contracts and boundaries.
 
 ## Harness Guides

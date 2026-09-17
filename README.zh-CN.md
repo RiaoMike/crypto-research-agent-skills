@@ -58,6 +58,14 @@ python scripts/install.py --target custom --dest /path/to/your/harness/skills
 - **证据与投稿准备：** `crypto-experiment-reproducibility`、`crypto-paper-writing`、`crypto-paper-review`
 - **顶会写作风格：** `crypto-venue-paper-writing`、`ccs-writing-style`、`usenixsec-writing-style`
 
+这三个写作风格技能针对两类相反缺陷：把必须凝练的地方（摘要、贡献列表）压缩，把必须详写的地方（技术概览、具体方案）展开——单靠字数上限无法发现这两类缺陷。每个阈值都是已发表顶会论文冻结语料的中位数或四分位数，以 `file:line` 标注并自带样本量与测量口径；随技能发布的两个计数工具负责按这些阈值实测稿件。
+
+- **密码学与 LNCS**（CRYPTO、EUROCRYPT、ASIACRYPT）：`crypto-venue-paper-writing` 拥有该家族以及两族共用的语料校准规则。
+- **安全四会**（ACM CCS、IEEE S&P、NDSS）：`ccs-writing-style` 拥有其语域与全族门控。
+- **USENIX Security：** `usenixsec-writing-style` 只补充该会独有的检查，并按名称调用上述门控。
+
+规则只写一次、其余位置引用，因此同一条规则句子不会出现在两个技能里。
+
 完整输出能力和边界见[能力清单](docs/capabilities.md)。
 
 ## 不同 Agent 的使用说明

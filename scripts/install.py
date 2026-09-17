@@ -78,7 +78,14 @@ def install_skills(
         staging = destination / f".{name}.staging-{uuid4().hex}"
         backup = destination / f".{name}.backup-{uuid4().hex}"
         try:
-            shutil.copytree(available[name], staging)
+            # Skip build artifacts. `.gitignore` keeps them out of commits but
+            # `copytree` does not read it, so without this filter a stale
+            # `__pycache__/*.pyc` would be installed beside a freshly edited script.
+            shutil.copytree(
+                available[name],
+                staging,
+                ignore=shutil.ignore_patterns("__pycache__", "*.pyc"),
+            )
             if target.exists():
                 target.rename(backup)
             staging.rename(target)

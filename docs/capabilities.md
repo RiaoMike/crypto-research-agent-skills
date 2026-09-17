@@ -60,21 +60,25 @@ Builds contribution-led outlines and manuscript sections from verified claims an
 
 ### `crypto-venue-paper-writing`
 
-Structures and polishes a cryptography paper for one named top venue (CRYPTO/EUROCRYPT/ASIACRYPT, IEEE S&P, CCS, USENIX, NDSS): venue-specific structure and section budget, four-part abstract under the word cap, de-AI rewriting against a grep-level checklist, calibrated claim language, double-blind compliance, and current-CFP format verification.
+Rewrites a cryptography paper in the two places where it goes wrong: it compresses the abstract and the contribution list to corpus-calibrated caps (abstract words, build share, longest sentence, bullet count and length, block/abstract ratio, and shared 6-grams against the abstract) and expands the technical overview and the construction to corpus floors with mandatory constituents. It also budgets section mass and relocates rather than deletes, keeps concrete measured values out of construction and proof sections, de-names research-process vocabulary by adjudication rather than by hit count, runs an executable de-AI checklist, checks double-blind anonymity and the LNCS template, and reports a diagnosis with the measured number, the threshold, and a verdict for every region. It owns the cryptography/LNCS family and the shared corpus-calibrated rules the security skills invoke; it states no security-venue-specific rule.
 
 ### `ccs-writing-style`
 
-Revises an ACM CCS paper for threat-model-first structure, calibrated attack/defense claims, the current CCS page budget, double-blind wording, and adaptive-evaluation honesty, with a claim-to-evidence output diagnosis.
+Revises an ACM CCS, IEEE S&P, or NDSS paper for threat-model-first structure, calibrated attack/defense claims, the current page budget, double-blind wording, and adaptive-evaluation honesty. It owns the family-wide security-venue gates — abstract and contribution condensation, the two abstract-to-contribution overlap indices, the overview and design constituent checklists, the design-versus-analysis mass ratio, and concrete-value placement — and reports counts instead of judgements. The USENIX skill and the cryptography skill invoke these gates by name rather than restating them.
 
 ### `usenixsec-writing-style`
 
-Drafts or revises USENIX Security prose with a load-bearing threat model, quantified claim calibration, disclosure narrative woven into the body, page-budget discipline, and plain systems-security register.
+Drafts or revises USENIX Security prose with a load-bearing adversary statement, quantified claim calibration, the two policy-mandated sections (`Ethics considerations` and `Open science`) immediately before the References, the 13-page budget plus that extra page, the disclosure thread woven into the methodology, and a plain systems-security register. It adds the USENIX-only checks and measurement table and invokes the shared family gates from `ccs-writing-style`, holding no second copy of them.
 
 ### `crypto-paper-review`
 
 Runs adversarial pre-review across fit, significance, novelty, correctness, security, parameters, evaluation, artifacts, ethics, clarity, and compliance. Findings are severity-ranked and routed to exact repair obligations.
 
 ## What the Full Suite Can Deliver
+
+The three writing skills ship two dependency-free counting instruments alongside their rules, so the gates can be measured rather than asserted: `skills/crypto-venue-paper-writing/scripts/count_venue_gates.py` and `skills/ccs-writing-style/scripts/count_prose_gates.py`. Each reports a status (`measured` / `degenerate` / `unmatched`) per gate instead of a silent pass, and exits non-zero when a gate cannot be measured — `2` for a measurement failure, `1` for a failed verdict-path pass condition.
+
+Every threshold in the three writing skills is cited to a frozen corpus with its sample size and basis inline, so a threshold can be checked without access to that corpus. The corpus paths quoted in the skills are provenance annotations into the authoring workspace, not links, and are not expected to resolve beside an installed copy.
 
 Given an idea and access to appropriate sources/tools, the suite can produce:
 

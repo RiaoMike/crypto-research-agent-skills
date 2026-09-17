@@ -1,5 +1,29 @@
 # Validation Record
 
+## 0.3.0 — 2026-09-17 (Linux, Python 3.14.7)
+
+Rewrote the compression and expansion rules of the three writing skills around a frozen writing-craft corpus, and shipped two counting instruments with them (16 canonical skills total, unchanged — no skill was added). Results on this machine:
+
+| Check | Result |
+|---|---:|
+| Canonical top-level skills | 16 |
+| Standard-library unit tests | 19 passed, 0 failed |
+| Repository validator (`scripts/validate.py skills`) | 16 passed, 0 failed |
+| Installed-tree validator (`scripts/validate.py ~/.dsh/skills`) | 16 passed, 0 failed |
+| Dry-run install plan | 16 skills, no writes |
+| Skills tree files | 77 |
+| Public Markdown files checked | 86 |
+| Real isolated install, SHA-256 compared file by file | 77 files, 0 hash mismatches |
+| `count_venue_gates.py --self-test` | 64/64 as expected, exit 0 |
+| Broken local Markdown links | 0 |
+| Exact author-machine path or private-key hits | 0 |
+| Python cache files eligible for commit | 0 |
+| ZIP files in source tree | 0 |
+
+The installed-tree row is the check that matters for this release: it was run against the live DeepSeek-harness skills directory after installation, where the pre-install state produced a `FAIL`. The three installed packages were also compared to the repository working copy with SHA-256 over every file; all three are byte-identical.
+
+Before this release the two style skills existed in two forms at once — a `name/SKILL.md` directory package and a flat `name.md` file. The flat files carried none of the six required headings, so the validator skipped them and could not report the duplicate; they are now removed and archived, and only the directory form is installed.
+
 ## 0.2.0 — 2026-09-07 (Linux, Python 3.14.7)
 
 Added `crypto-venue-paper-writing`, `ccs-writing-style`, and `usenixsec-writing-style` (16 canonical skills total). Results on this machine:
