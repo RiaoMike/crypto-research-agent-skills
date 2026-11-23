@@ -6,7 +6,7 @@ Adapted from the USENIX writing-style guidance in the Awesome-Journal-Skills col
 
 | Section | Budget | Job | Anchor (file:line, n, basis) |
 |---|---|---|---|
-| Abstract + intro | 1-1.25 pp | Problem, adversary, what is built, contribution bullets with numbers | USENIX abstract 212 words median, n=35, words — `skills-work/corpus/security/statistics.md:50` |
+| Abstract + intro | 1-1.25 pp | Problem, adversary, what is built, contribution bullets with numbers | USENIX abstract **212 words median on the USENIX subsample, n=18** — four-venue table at `skills-work/corpus/security/statistics.md:213`, its per-venue header at `:211`; the same four medians are quoted at `:50` for the pooled 35-paper corpus, so the per-venue figure must never be labelled n=35 |
 | Background + threat model | 1.5-2 pp | Just enough context; the adversary, stated once in prose | standalone threat-model section 843 words median (q1 769, q3 1041), n=16, words — `:157`; four-venue standalone share S&P 25% / CCS 60% / USENIX 28% / NDSS 88% — `:217` |
 | Technical overview | 0.75-1.5 pp | The intuition and the mechanism, before the formal detail | 2 pages and 1535.5 words median (q1 854, min 596), n=20, pages and words — `:91-92`; USENIX standalone-section share 56% — `:216` |
 | Design / attack technique | 3-4 pp | The mechanism, end to end; the design-section constituents | USENIX median 4063.5 words (n=18); all-venue median 3481 words (n=35) — `:127`, `:119` |

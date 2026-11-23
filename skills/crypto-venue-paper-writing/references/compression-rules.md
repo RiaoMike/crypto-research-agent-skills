@@ -17,29 +17,35 @@ Therefore this pass always reports four abstract numbers and five contribution-l
 
 ## Thresholds
 
+**The rule column names the gate that prints the bound, and the bound is the instrument's to print at run time.** Bounds *are* written in this file where a rule is unreadable without one, and they are written under the re-statement rule of `scripts/count_venue_gates.py`, which is a **licence test rather than a ban**: a bound may be stated on a line that carries the citation its own `--constants` registry row declares — or, on a line with no other citation, that row's sample size `n` — and `--restatement-check` flags the bounds written without one. So the true statement is "every bound here carries its licence, and the licence is checkable", not "this file recites no bound"; `--restatement-report` prints each written bound with the pointer that excused it. The
+corpus-value column is distribution CONTEXT — a quantile, a maximum, a pooled share — which is why
+it stays: it says what the cap costs, not what the cap is. Run `cd skills-work/crypto-research-agent-skills` then
+`python3 skills/crypto-venue-paper-writing/scripts/count_venue_gates.py --constants` for every bound with its printing gate, or read the bound off
+the gate's own output line.
+
 ### The abstract
 
-| quantity | rule | corpus value | anchor | n |
+| quantity | rule (printed by) | corpus distribution (context) | anchor | n |
 |---|---|---|---|---|
-| total words | **at most 210** | median 210 · q1 144 · q3 253 · max 483 | `skills-work/corpus/crypto/statistics.md:121` | 59 |
-| build share | **at least 0.56** | pooled 0.56 | `skills-work/corpus/crypto/statistics.md:165` | 15 |
-| longest sentence | **at most 40 words** | median 40 · q1 34 · q3 49 · max 98 | `skills-work/corpus/crypto/statistics.md:124` | 59 |
-| sentences | report; target 8 | median 8 · q1 6 · q3 10 | `skills-work/corpus/crypto/statistics.md:122` | 59 |
-| paragraphs | **at least 2**, and every paragraph is labelled | median 2 · q1 2 · min 1 · max 9 | `skills-work/corpus/crypto/statistics.md:123` | 59 |
+| total words | **at most the corpus median** — gate `abstract-words` | median · q1 144 · q3 253 · max 483 | `skills-work/corpus/crypto/statistics.md:121` | 59 |
+| build share | **at least the corpus pooled share** — gate `abstract-build-share` | the pooled value is the floor | `skills-work/corpus/crypto/statistics.md:165` | 15 |
+| longest sentence | **at most the corpus median** — gate `abstract-longest-sentence` | median · q1 34 · q3 49 · max 98 | `skills-work/corpus/crypto/statistics.md:124` | 59 |
+| sentences | report; target the median | median 8 · q1 6 · q3 10 | `skills-work/corpus/crypto/statistics.md:122` | 59 |
+| paragraphs | **at least the corpus floor**, and every paragraph is labelled — gate `abstract-paragraphs` | q1 2 · min 1 · max 9 | `skills-work/corpus/crypto/statistics.md:123` | 59 |
 
-**Build share is computed by hand-coding, not by keyword.** Label every abstract paragraph `context`, `gap`, `build`, or `result`, then divide the words of the `build` paragraphs by the abstract total. The corpus method is recorded at `skills-work/corpus/crypto/statistics.md:141-147`. Do not substitute a keyword classifier: the corpus's own keyword pass reports a build share of 0.14 while the hand-coded pass reports 0.56 for the same population, and the file names the hand-coded table as the authority (`skills-work/corpus/crypto/statistics.md:177-179`).
+**Build share is computed by hand-coding, not by keyword.** Label every abstract paragraph `context`, `gap`, `build`, or `result`, then divide the words of the `build` paragraphs by the abstract total. The corpus method is recorded at `skills-work/corpus/crypto/statistics.md:141-147`. Do not substitute a keyword classifier: the corpus's own keyword pass reports a share far below the hand-coded pass for the same population (the two values and their disagreement are on `skills-work/corpus/crypto/statistics.md:177-179`, and the gate prints the floor it uses), and the file names the hand-coded table as the authority.
 
 Corpus build-share span for calibration, from `skills-work/corpus/crypto/statistics.md:148-165`: the sample runs from 0.00 to 1.00, and the papers that read as "related work first" are the ones in the low tail. A paper whose contribution is a construction should not sit below the pooled value.
 
 ### The contribution list
 
-| quantity | rule | corpus value | anchor | n |
+| quantity | rule (printed by) | corpus distribution (context) | anchor | n |
 |---|---|---|---|---|
-| bullets | **2 to 5** | median 4 · q1 2 · q3 5 · max 13 | `skills-work/corpus/crypto/statistics.md:196` | 50 |
-| block words | **at most 146** | median 146 · q1 71 · q3 255 · max 858 | `skills-work/corpus/crypto/statistics.md:197` | 50 |
-| words per bullet | **at most 29.5** | median 29.5 · q1 13 · q3 57 | `skills-work/corpus/crypto/statistics.md:198` | 214 |
-| longest bullet | **at most 57.5 words** | median 57.5 · q1 31 · q3 106 · max 486 | `skills-work/corpus/crypto/statistics.md:199` | 50 |
-| block / abstract ratio | **at most 0.81** | median 0.81 · q1 0.36 · q3 1.07 · max 4.56 | `skills-work/corpus/crypto/statistics.md:200` | 50 |
+| bullets | **the corpus's own range** — gate `contributions-block` | median 4 · q1 2 · q3 5 · max 13 | `skills-work/corpus/crypto/statistics.md:196` | 50 |
+| block words | **at most the corpus median** — gate `contributions-block` | median · q1 71 · q3 255 · max 858 | `skills-work/corpus/crypto/statistics.md:197` | 50 |
+| words per bullet | **at most the corpus median (per item)** — gate `contributions-items` | median · q1 13 · q3 57 | `skills-work/corpus/crypto/statistics.md:198` | 214 |
+| longest bullet | **at most the corpus median** — gate `contributions-items` | median · q1 31 · q3 106 · max 486 | `skills-work/corpus/crypto/statistics.md:199` | 50 |
+| block / abstract ratio | **at most the corpus median ratio** — gate `contributions-block` | median · q1 0.36 · q3 1.07 · max 4.56 | `skills-work/corpus/crypto/statistics.md:200` | 50 |
 
 A contribution list is a list of **objects**, not of activities: the corpus's median bullet opens by naming the object it introduces (`skills-work/corpus/crypto/craft-notes.md:148-171`). A bullet that narrates what the authors did, in what order, and what they tried first is a process narration and is deleted, not shortened.
 
@@ -117,14 +123,14 @@ The pass must reproduce these verdicts on the frozen calibration manuscript. The
 | abstract `research-work/paper/final-paper.md:11-17` | **247** | **295** | **268** |
 | §5.5 share of §5 | **0.5659** | **0.6183** | — |
 
-**Every verdict in this table is unchanged under either basis**, which is what makes it usable as calibration evidence. The §5.5 share is the one place where the two bases land in different corpus bands while agreeing on the verdict: 0.5659 sits between the corpus median 0.491 and the third quartile 0.607, while 0.6183 passes 0.607 — but both are above the 0.50 majority ceiling, so both break it, and neither reaches the 0.65 outlier line.
+**Every verdict in this table is unchanged under either basis**, which is what makes it usable as calibration evidence (frozen calibration manuscript, `research-work/paper/final-paper.md`, with its share recorded against `corpus/crypto/statistics.md:330-334`, including the outlier line `corpus/crypto/statistics.md:334`). The §5.5 share is the one place where the two bases land in different corpus bands while agreeing on the verdict: 0.5659 sits between the corpus median 0.491 and the third quartile 0.607, while 0.6183 passes 0.607 — but both are above the 0.50 majority ceiling, so both break it, and neither reaches the 0.65 outlier line.
 
 | region | measured (whitespace tokens) | threshold | verdict |
 |---|---|---|---|
-| abstract `research-work/paper/final-paper.md:11-17` | 247 words (295 on the corpus basis) | at most 210 | **breach** — the near-miss case: a 250-word cap would have passed it, and it still breaches on either basis |
-| abstract build share, same span | **0.3401** = build-paragraph words / abstract-total words, both whitespace tokens (0.3194 only if a keywords-inclusive denominator is used) | at least 0.56 | **breach** — allocation defect, the one a length cap cannot see; the denominator is stated because the value moves with it |
-| contribution list `research-work/paper/final-paper.md:29-44` | 902 words | at most 146 | **breach** |
-| block / abstract ratio, same pair | 3.65 | at most 0.81 | **breach** |
+| abstract `research-work/paper/final-paper.md:11-17` | 247 words (295 on the corpus basis) | at most 210 (`corpus/crypto/statistics.md:121`, n=59) | **breach** — the near-miss case: a 250-word cap would have passed it, and it still breaches on either basis |
+| abstract build share, same span | **0.3401** = build-paragraph words / abstract-total words, both whitespace tokens (0.3194 only if a keywords-inclusive denominator is used) | at least 0.56 (`corpus/crypto/statistics.md:165`, n=15) | **breach** — allocation defect, the one a length cap cannot see; the denominator is stated because the value moves with it |
+| contribution list `research-work/paper/final-paper.md:29-44` | 902 words | at most 146 (`corpus/crypto/statistics.md:197`, n=50) | **breach** |
+| block / abstract ratio, same pair | 3.65 | at most 0.81 (`corpus/crypto/statistics.md:200`, n=50) | **breach** |
 | shared 6-grams, abstract vs list | 30 | 0 | **breach** — corpus maximum is 6 |
 
 A pass that reports "abstract OK" for these regions, or that reports the 902-word list as acceptable, has not run. A pass that prints any of these absolute counts without the basis they were measured on has also not run.

@@ -18,16 +18,19 @@ Every gate below is a count. The counts are only comparable if the basis is decl
 - **trigram Jaccard** — the same index over the sets of adjacent word trigrams, which is more sensitive to reused phrasing than the word bag.
 - **numeric-literal class** — measured quantities: multi-digit exact decimals, exact success or failure probabilities, bit counts, byte counts, and timings. Small structural integers (a number of parties, a number of protocol rounds, a party index) are not in the class.
 
-`scripts/count_prose_gates.py` in this repository prints these counts for a manuscript or for one extracted span. Run it before rewriting and after; a gate report without before-and-after numbers is incomplete.
+- **caption block** — a line that opens a float caption: an optional number, then `Figure`/`Fig.`/`Table`, then the caption number and its separator. This is the unit of census rows B1/B2 and a **lower bound** on the rendered float count (a caption the extraction merged into a paragraph line is not counted). It is not the LaTeX-environment basis and the two are never averaged.
+- **reference call** — a LaTeX `\ref`/`\eqref`/`\autoref`/`\cref`/`\pageref` target, resolved against the `\label` declarations in the same file.
+
+`skills/ccs-writing-style/scripts/count_prose_gates.py` in this repository prints these counts for a manuscript or for one extracted span: `abstract-contributions`, `section-mass`, `span`, and the evidence rows `evidence`, `captions`, `crossrefs`, `math`. Run it from the skill-suite root (`cd skills-work/crypto-research-agent-skills`) before rewriting and after; a gate report without before-and-after numbers is incomplete. `--self-test` runs **47 cases** that prove both directions of every gate in one pass — including the R-27 scope assertions and the twin-basis and exit-code assertions of R-32 F-3/F-7, so a later edit cannot silently turn a whole-paper cryptography quartile into a section- or security-scoped threshold, read a markdown draft with the LaTeX float basis, or collapse "not applicable" into "failed". **The instrument prints that count itself** (`self-test: 47/47 as expected`) and the printed count is authoritative: if this file and the instrument disagree, the instrument is right and this file is stale. A gate that cannot be shown to fire is not a gate. Its exit codes are part of the contract: **0** measured with no breach, **1** a breached gate whose reason is printed on stderr, **2** a measurement failure (missing or empty input, no `--section`, a heading pattern that matched nothing) from which no verdict may be read, **4** a row that does not apply to this twin (a markdown draft has no `\ref` targets), which is neither a pass nor a failure.
 
 ### Checking that a pointer still points at something
 
 Pointer resolvability is enforced by **two instruments that must agree**, because they have different reach:
 
-- **In the repository:** the shared checker, `python3 skills-work/tools/rule-trace-check.py --fail-on-gap` (its C15 check). Expected `RESULT: PASS [no FAIL]`, exit 0.
-- **Wherever this skill is installed:** `python3 scripts/check_pointer_resolution.py`, which ships with the skill and therefore travels to `~/.dsh/skills`, where `skills-work/tools/` does not exist (R-20a). Expected `RESULT: PASS (n/n gate names resolve)`, exit 0; it prints one `OK`/`FAIL` line per pointer/owner pair, then a `skip` line for every name it excluded.
+- **In the repository:** the shared checker, `python3 skills-work/tools/rule-trace-check.py --fail-on-gap` (its C15 check). **A workspace instrument, not a shipped one** — run it from the workspace root (the directory containing `skills-work/`), and do not expect that path to resolve beside an installed copy. Expected `RESULT: PASS [no FAIL]`, exit 0.
+- **Wherever this skill is installed:** `python3 skills/ccs-writing-style/scripts/check_pointer_resolution.py` **from the skill-suite root** (`cd skills-work/crypto-research-agent-skills`), which ships with the skill and therefore travels to `~/.dsh/skills`, where `skills-work/tools/` does not exist (R-20a). Expected `RESULT: PASS (n/n gate names resolve)`, exit 0; it prints one `OK`/`FAIL` line per pointer/owner pair, and a `skip` line for each name it excluded — a run that excludes no name prints no `skip` line.
 
-Both use the same contextual criterion: a gate name that is backticked, or introduced by *invoke / call / apply / run / use / check / grep*, is a **use** and must resolve in the owning file; a name the text warns about is a **mention** and is left alone. That distinction is what lets a pointer file warn "a reader may expect a gate named after the design section; no such gate exists — the owner declares `Gate-Expand-Scheme`" without failing: the warning is excluded as a mention, and the canonical gate the sentence sends the reader to is still checked. Run either instrument after a gate is renamed, after a pointer file changes the name it uses, and before a submission. `scripts/check_pointer_resolution.py --self-test` proves both directions at once (13 cases) if you want to see the guard rather than trust it.
+Both use the same contextual criterion: a gate name that is backticked, or introduced by *invoke / call / apply / run / use / check / grep*, is a **use** and must resolve in the owning file; a name the text warns about is a **mention** and is left alone. That distinction is what lets a pointer file warn "a reader may expect a gate named after the design section; no such gate exists — the owner declares `Gate-Expand-Scheme`" without failing: the warning is excluded as a mention, and the canonical gate the sentence sends the reader to is still checked. Run either instrument after a gate is renamed, after a pointer file changes the name it uses, and before a submission. `skills/ccs-writing-style/scripts/check_pointer_resolution.py --self-test` proves both directions at once — **14 cases** at the revision this file was written against, and it prints that count itself, which is the one to quote — if you want to see the guard rather than trust it.
 
 ### The instrument's contract — three rules a measuring device must obey
 
@@ -39,35 +42,37 @@ An instrument that reports a clean zero where it matched nothing is worse than n
 
 ## Thresholds, with anchors
 
-The last column says which corpus the anchor resolves in. **Security** means `skills-work/corpus/security/statistics.md` (35 papers, PDF-extracted text); **Crypto** means `skills-work/corpus/crypto/statistics.md` (62 tier-A papers, LaTeX plain-text rendering). The two corpora count different textual bases, so a number is only comparable to another number from the same corpus; the earlier CCS reference cited `corpus/...` shorthand, and the full paths are used here so every anchor resolves from the workspace root.
+The Corpus column says which file an anchor resolves in: **Security** is `skills-work/corpus/security/statistics.md` (35 papers, PDF-extracted text), **Crypto** is `skills-work/corpus/crypto/statistics.md` (62 tier-A papers, LaTeX plain-text rendering). The two corpora count different textual bases, so a number is only comparable to another number from the same corpus; the full paths are used here so every anchor resolves from the workspace root.
+
+**The bound is stated once, in the gate below; the sample and the row it came from are here.** The distributions themselves are printed by `skills/ccs-writing-style/scripts/count_prose_gates.py`, but **not in the `basis` field**: that field describes the unit measured — the tokenizer, the twin, the proxy warning. The quartiles, medians and extremes print in the **context** records beside each row: `citations.context_non_binding.citation_keys_per_1000w` and `cross_references.context_non_binding.reference_calls_per_1000w` for the cryptography rows, `floats.floor_basis` and `floats.context_non_binding.per_venue_medians` for the float rows, and `math.reference_distribution` for the formal-content row. **Correction recorded (t3): an earlier version of this paragraph said those numbers were printed "as that row's `basis`", and that the table below therefore does not copy a bound — both statements were false.** The instrument has no `basis` field of that kind, and the table does state each bound as a number. What the table adds is the unit and the sample size — the two things a reader needs to check that a bound's scope matches the row that licenses it (R-27) — plus the anchor to recompute the distribution from, and every bound it states carries that anchor on its own row.
 
 | Gate quantity | Threshold | n | Basis | Anchor | Corpus |
 |---|---|---|---|---|---|
-| Abstract words | at most **220** (corpus median; q1 173, q3 241, max 362) | 35 | words, PDF-extracted text | `skills-work/corpus/security/statistics.md:31` | Security |
-| Abstract sentences | at most **9** (q1 8, q3 11) | 35 | sentences | `skills-work/corpus/security/statistics.md:32` | Security |
-| Mean words per abstract sentence | at most **24.1** (the corpus median; 1.25× would be 30, offered as a tolerance band rather than a gate) | 35 | words/sentence | `skills-work/corpus/security/statistics.md:33` | Security |
-| Longest abstract sentence | at most **40** (crypto-corpus median; q3 49) | 59 | words | `skills-work/corpus/crypto/statistics.md:124` | Crypto |
-| Contribution items | at most **5**, absolute **10** (q1 3, q3 6, max 10) | 22 | items | `skills-work/corpus/security/statistics.md:58` | Security |
-| Words per contribution item | at most **72** (q1 22, q3 150, max 574) | 22 | words | `skills-work/corpus/security/statistics.md:59` | Security |
+| Abstract words | at most **220** | 35 | words, PDF-extracted text | `skills-work/corpus/security/statistics.md:31` | Security |
+| Abstract sentences | at most **9** | 35 | sentences | `skills-work/corpus/security/statistics.md:32` | Security |
+| Mean words per abstract sentence | at most **24.1** — the corpus median, and the **pass threshold the gate applies is the 1.25× tolerance band on it, i.e. 30 words**; the two numbers are reconciled at `Gate-Condense-Abstract` below, so the table and the gate never state different bounds | 35 | words/sentence | `skills-work/corpus/security/statistics.md:33` | Security |
+| Longest abstract sentence | at most **40** | 59 | words | `skills-work/corpus/crypto/statistics.md:124` | Crypto |
+| Contribution items | at most **5**, absolute **10** | 22 | items | `skills-work/corpus/security/statistics.md:58` | Security |
+| Words per contribution item | at most **72** | 22 | words | `skills-work/corpus/security/statistics.md:59` | Security |
 | Contribution items carrying a number | median **66.7%** — a target, not a floor | 22 | share | `skills-work/corpus/security/statistics.md:60` | Security |
-| Contributions vs abstract, word-bag Jaccard | at most **0.20** (median 0.201, max 0.309) | 22 | word sets | `skills-work/corpus/security/statistics.md:61` | Security |
-| Contributions vs abstract, trigram Jaccard | at most **0.019** (the corpus median; max 0.038) | 22 | trigram sets | `skills-work/corpus/security/statistics.md:62` | Security |
+| Contributions vs abstract, word-bag Jaccard | at most **0.20** | 22 | word sets | `skills-work/corpus/security/statistics.md:61` | Security |
+| Contributions vs abstract, trigram Jaccard | at most **0.019** | 22 | trigram sets | `skills-work/corpus/security/statistics.md:62` | Security |
 | Abstract process narration | **0** instances tolerated | 35 | manual + lexical scan | `skills-work/corpus/security/statistics.md:48` | Security |
-| Contributions vs threat model, word-bag Jaccard | at most **0.20** | 22 | word sets | `skills-work/corpus/security/statistics.md:61` | Security |
-| Technical overview, minimum size | at least **596** words (the corpus minimum; q1 854, median 1535.5) | 20 | words | `skills-work/corpus/security/statistics.md:92` | Security |
+| Contributions vs threat model, word-bag Jaccard | at most **0.20**, the same index as the contributions-vs-abstract row but computed between two different spans; no separate corpus row measures this pair, so the number is the sibling bound carried over rather than a second measurement | — (no corpus row; scope is the draft) | word sets | prose-declared, licensed by `skills-work/corpus/security/statistics.md:61` only for the index definition | Security |
+| Technical overview, minimum size | at least **596** words | 20 | words | `skills-work/corpus/security/statistics.md:92` | Security |
 | Technical overview, expected size | median **1535.5** words; CCS-only median **1058** | 20 / 5 | words | `skills-work/corpus/security/statistics.md:92`, `:219` | Security |
 | Technical overview, presence | **5 of 5** CCS papers present an overview function | 5 | manual section audit | `skills-work/corpus/security/statistics.md:82` | Security |
-| Overview components | **5** required components | 25 | manual deep read | `skills-work/corpus/security/statistics.md:104` | Security |
+| Overview components | **5** required components, each with a corpus instance | 5 named / 20–25 deep reads | manual deep read of the overview sections | `skills-work/corpus/security/statistics.md:104` | Security |
 | Scheme section, expected size | median **3481** words (corpus and CCS-only coincide) | 35 / 5 | words | `skills-work/corpus/security/statistics.md:119`, `:127` | Security |
-| Scheme section, required constituents | **5** constituents at 10–20 of 25 papers each | 25 | regex count over deep reads | `skills-work/corpus/security/statistics.md:131` | Security |
-| Scheme/analysis word ratio | at least **0.44** (q1; median 0.89, only 40% above 1) | 10 | words, direct | `skills-work/corpus/crypto/statistics.md:285` | Crypto |
-| Abstract length, four-venue medians | S&P 214 / CCS 205 / USENIX 212 / NDSS 227.5; ranges fully overlapping — the null finding that forbids per-venue caps | 35 | words | `skills-work/corpus/security/statistics.md:213` | Security |
-| Standalone overview section share | S&P 100% / CCS 100% / NDSS 100% / **USENIX 56%** | 35 | section audit | `skills-work/corpus/security/statistics.md:216` | Security |
-| Standalone threat-model section share | S&P 25% / CCS 60% / USENIX 28% / NDSS 88% | 35 | section audit | `skills-work/corpus/security/statistics.md:217` | Security |
-| Body page limits, official CFP | S&P 13 (+5) / CCS 12 excluding refs / USENIX 13 (+1) / NDSS 15 all-inclusive | — | official calls | `skills-work/corpus/security/statistics.md:220` | Security |
-| Scheme/design section words | at least **2663** words (corpus q1 of the design-section word count; the implied share of a 13800-word body is 0.19) | 35 | words | `skills-work/corpus/security/statistics.md:119` | Security |
-| Threat-model section size | median **843** words (q1 769, q3 1041) | 16 | words | `skills-work/corpus/security/statistics.md:157` | Security |
-| Largest child subsection share | flag above the corpus q3 **0.607** (median 0.491, p90 0.774) | 561 | words | `skills-work/corpus/crypto/statistics.md:330` | Crypto |
+| Scheme section, required constituents | **5** constituents, each a regular-expression-counted class | 25 | regex count over deep reads | `skills-work/corpus/security/statistics.md:131` | Security |
+| Scheme/analysis word ratio | at least **0.44** (the corpus first quartile) | 10 | words, direct basis | `skills-work/corpus/crypto/statistics.md:285` | Crypto |
+| Abstract length, four-venue medians | fully overlapping — the null finding that forbids per-venue caps | 35 | words | `skills-work/corpus/security/statistics.md:213` | Security |
+| Standalone overview section share | venue-dependent; this venue's value is in the `usenixsec-writing-style` skill | 35 | section audit | `skills-work/corpus/security/statistics.md:216` | Security |
+| Standalone threat-model section share | venue-dependent; CCS's own value is the default this skill reads | 35 | section audit | `skills-work/corpus/security/statistics.md:217` | Security |
+| Body page limits, official CFP | one numbered limit per venue, per cycle | — | official calls | `skills-work/corpus/security/statistics.md:220` | Security |
+| Scheme/design section words | at least **2663** words (the corpus first quartile of the design-section word count) | 35 | words | `skills-work/corpus/security/statistics.md:119` | Security |
+| Threat-model section size | median **843** words | 16 | words | `skills-work/corpus/security/statistics.md:157` | Security |
+| Largest child subsection share | flag above the corpus third quartile | 561 | words | `skills-work/corpus/crypto/statistics.md:330` | Crypto |
 | CCS body page limit | **12** pages, excluding bibliography, marked appendices, supplementary material — policy, verify at execution time | — | official call | `skills-work/corpus/security/statistics.md:177` | Security |
 
 ## Condensation gates
@@ -87,7 +92,7 @@ Length caps do not enter this list because the corpus does not support a per-ven
 
 **Input** the abstract. **Output** words, sentences, longest sentence, per-paragraph move labels (context / gap / build / result), and the share of words in each move.
 
-**Pass:** words ≤ 220 unless a recorded reason names why the venue's own distribution supports more; sentences ≤ 9; mean sentence length ≤ 30 words; longest sentence ≤ 40 words; at least one paragraph performs the build move by naming the artifact, protocol, or mechanism the paper contributes; zero process-narration spans; no sentence shared verbatim with the contributions list.
+**Pass:** words ≤ 220 unless a recorded reason names why the venue's own distribution supports more; sentences ≤ 9; mean sentence length ≤ 30 words — **that 30 is the corpus median of 24.1 with the 1.25× tolerance band applied, and it is the bound this gate passes on**, exactly as the threshold table above states it, so the row and the gate cannot disagree; longest sentence ≤ 40 words; at least one paragraph performs the build move by naming the artifact, protocol, or mechanism the paper contributes; zero process-narration spans; no sentence shared verbatim with the contributions list.
 
 **Fail:** every number inside the caps but no paragraph naming what is built; a 220-word abstract whose analysis paragraphs hold over half the words and whose build paragraph is a single clause. The reported defect has exactly this shape — a 247-word abstract in four paragraphs, three of which report analysis outcomes — and it passes a bare length cap, so a length cap alone never closes this gate.
 
@@ -99,9 +104,15 @@ Length caps do not enter this list because the corpus does not support a per-ven
 
 **Pass:** items ≤ 5 (≤ 10 absolute); words per item ≤ 72 with at most one item above 150; list ≤ 250 words; word-bag Jaccard ≤ 0.20; trigram Jaccard ≤ 0.019; each duplicated span given a disposition (delete, merge, or move into the body with a forward reference).
 
-**Fail:** an item that restates an abstract sentence with the words rearranged and no new claim; a total over 250 words with no reported number; a 0.30 Jaccard list left in place. Uneven items — two over 100 words and the rest under 10 — also fail: the measured quartiles are 22 and 150, so unequal items must be a deliberate decision, not an accident.
+**The per-item cap is a security-family value, and the other family's number is named here so neither can be
+transplanted (R-11(a), t8 T8-01).** The 72-word cap comes from the security four-venue corpus, **n=22**,
+`skills-work/corpus/security/statistics.md:59`. The cryptography family's cap is **29.5 words per bullet**,
+median over 214 bullets, longest bullet 57.5 (`skills-work/corpus/crypto/statistics.md:198-199`), and it is
+**not** the rule at this venue: it is measured on bullet lists in CRYPTO/EUROCRYPT/ASIACRYPT/TCC papers, and it
+does not govern a security-venue contribution item. The 2.4× gap is a measured population difference, not a
+tolerance — before applying either number, name the venue family of the paper, and apply only that family's
+cap. `crypto-venue-paper-writing` carries the mirror statement for the other family.
 
-**Note on the metric's limit.** The corpus itself sits at a word-bag Jaccard of 0.201, so a rule that demanded near-zero overlap would fail the published literature. The threshold is the corpus median: it catches the draft whose contributions block is the abstract rewritten, and it passes the draft whose contributions recycle terminology while making distinct claims. The trigram index is the sharper instrument for the second failure — recycled sentences move it, recycled terminology barely does, which is why the corpus separates them so widely (0.201 against 0.019 at the median).
 
 ### Gate-Condense-Contributions-vs-Threat-Model
 
@@ -178,6 +189,58 @@ Plus the mechanism-explanation sentence class: the corpus holds it in the deep r
 **Pass:** measured values live in the evaluation, parameters, and implementation sections; the design and proof regions carry symbolic or asymptotic expressions; a measured value that must move is moved *with its digits and its provenance*, is never rounded away and never deleted, and the receiving section says where it came from.
 
 **Fail:** an exact success probability or a long decimal expansion sitting in a construction paragraph with no location statement; a value replaced by an adjective in the name of style. The cheapest way to make a construction look detailed is to pour measured numbers into it, and that recreates a known defect class. Precision in the design section belongs to definitions, not to measurements.
+
+## Evidence-apparatus gates
+
+These three gates close the dimension the prose gates above cannot see: a draft can pass every word-count gate while carrying no float, no resolvable cross-reference, and no citation. The measured distributions are census rows `B1`/`B2`/`B4` and `A10`/`A11`/`A12` of `skills-work/audit/evidence-structure-census.md`, whose §Appendix F table now runs to `A1`–`A20` with `B1`–`B6` and `G-E1`–`G-E9` beside them; its §Bases defines the units. The instrument is `skills/ccs-writing-style/scripts/count_prose_gates.py evidence`, with `captions`, `crossrefs` and `math` for one row at a time.
+
+**Scope rule (R-27), which these gates obey and the reader must not bend.** A threshold's scope must equal the scope of the corpus row that licenses it, because scope is part of the basis. The corpus rows cited here come in exactly two scopes, and they are not interchangeable:
+
+- **per paper** — B1, B2 (figure / table caption blocks per paper) and A10/A11's label count;
+- **whole paper, per 1000 words** — A1, A10, A12 (each measured over a paper's entire source, not over a section).
+
+So the only **bound** values the three gates below carry are: the float floor of **1** (B1/B2, per paper — same scope as its row), and the structural requirement of **no unresolved reference target** and **no zero-citation related-work region**, which are properties of the draft and are derived from no corpus quantile at all. Every other number printed beside them — the cryptography per-1000-words quartiles, the label medians, the per-venue caption medians — is **context, whole-paper scoped, and non-binding**, and the instrument says so in its own output (R-24a.2). A section-scoped density breach is **not licensed for the security venues**, and the reason is the population rather than an absence: the security four-venue corpus is PDF-extracted text with no LaTeX source and no role decomposition, so **no security-venue section-scoped row exists** and a security-venue section cannot be judged on a scope that was never measured for it. **This file does not claim the wider statement that "no section-scoped corpus row exists" — that claim was withdrawn as FALSE (R-32 F-4).** The cryptography corpus's own per-role table does carry section-scoped rows (`corpus/crypto/statistics.md` §FORMAL.2: construction, analysis, overview, preliminaries, introduction, evaluation, related, conclusion, each with its own n and quantiles), `crypto-venue-paper-writing` binds a floor on them at criterion 20a, and the same statement is made in the USENIX sibling so the two cannot drift. What a security-venue draft may not do is borrow that role row: the role would have to be a security-venue role, and none was measured.
+
+### Gate-Expand-Float-Floor
+
+**Input** the whole draft. **Output** the count of figure caption blocks, of table caption blocks, and of their total, on the basis the instrument prints.
+
+**Basis — the count belongs to the twin being read, and the two bases are never mixed (R-24.1, R-32 F-3).**
+
+- **LaTeX twin**: `\begin{figure}` and `\begin{table|longtable|sidewaystable}` environments.
+- **markdown twin**: the **markdown proxy** — `Figure N` / `Fig. N` / `Table N` label lines, plus **pipe-table blocks** (two or more consecutive `|` lines) standing in for the table body. A markdown draft has no float environments, so judging it with the LaTeX basis reports 0 for a draft that plainly carries tables and fires the floor on a healthy paper. That was the reported defect (t6 F-3): one input, two sibling instruments, opposite verdicts.
+
+The markdown classes are **proxies**: they are not interchangeable with a LaTeX float count and must never be summed with or compared to one; the instrument prints `"proxy": true` and the warning beside them. What is comparable across twins is the **verdict on the same manuscript**, and after this change the three instruments that read a draft agree on it.
+
+The census basis for the security rows is a caption block that starts a line (an optional number, then `Figure`/`Fig.`/`Table`, then the number and a separator) — census rows B1/B2, security four venues, n=35 — which is what the LaTeX branch counts; the markdown branch is the proxy described above. Both are **lower bounds** on the rendered float count, because a caption the text extraction merged into a paragraph is not counted. Never lift `corpus/security/metrics.raw.json`'s `floats.figure_captions` row as a float count: it counts every in-text mention, and its median for these same 35 papers is 23 against the 10 caption blocks measured here (census B6).
+
+**Pass:** at least one figure or table caption block. That is the whole floor, and it is a floor because **34 of 35** corpus papers clear it: figures per paper min **0**, first quartile **5**, median **10**, third quartile **13**, max **20**, with **2 of 35** at zero; tables per paper min **0**, first quartile **0**, median **2**, third quartile **5**, max **12**, with **12 of 35** at zero (census B1/B2). The one paper with neither is `usenix2024-angel`.
+
+**Why the floor is 1 and not the median.** A table floor would be a **venue** rule rather than a corpus rule: NDSS's table-caption median is **0 of 8** while CCS's is **5 of 5** (census B2), so no table value is shared across the four venues. Figures are counted and reported for the same reason — two of 35 papers have none, so a zero figure count is an outlier to state in the report, not a breach to fail. Report the counts against the quartiles above; only the figure-plus-table total of zero is a breach.
+
+**Fail:** zero figure caption blocks and zero table caption blocks. Report the counts and the quartiles with the verdict — a bare "add figures" is not a result.
+
+**Family boundary.** This floor is calibrated on the **security four venues** and is applied to them only. A cryptography-family draft (CRYPTO/EUROCRYPT/ASIACRYPT/LNCS) is measured on a different float basis (LaTeX `figure`/`table` environments: **55 of 62** tier-A papers carry some float form, census A6/A7) and is never failed on this security floor; the instrument's `--venue crypto` switch reports the counts and withholds the verdict.
+
+### Gate-Expand-CrossReference-Integrity
+
+**Input** the LaTeX twin of the draft. **Output** every `\ref`, `\eqref`, `\autoref`, `\cref` and `\pageref` target, every `\label`, and the target set that resolves nowhere.
+
+**Basis and why it carries no threshold.** The security four-venue corpus is PDF-extracted text with no LaTeX sources on disk, so reference-call density was never measured on it. What the cryptography corpus measured (census A10/A11, tier-A n=62) is **whole-paper** scoped — reference calls per 1000 words min **0.000**, first quartile **2.778**, median **3.468**, third quartile **5.687**, with 61 of 62 papers above zero; labels per paper min **2**, median **49.5**, with **0 of 62** papers carrying zero labels — and every one of those numbers is **context only, printed as non-binding** in the instrument's output. Two reasons they may not bind here: they are whole-paper statistics while this gate reads the whole draft's reference commands (a count, not a density), and they belong to another family whose scope and population both differ. This gate therefore states the **resolvability** requirement, which is a property of the draft rather than of a population, and it leaves any density floor to the cryptography-family skill that owns that corpus.
+
+**Pass:** every reference target has a `\label` declaration in the same file. The list of unresolved targets is printed and the instrument exits non-zero on a breach; a broken pointer is a measurement failure, not a silent pass.
+
+**Fail:** a `\ref` whose target is declared nowhere — the rendered draft ships `??`. The clause includes the relocation case: if a span was moved to an appendix, the appendix's label must exist, and a markdown draft's appendix must be called from the body, otherwise the reader cannot reach the material that was moved out of the body.
+
+**Not-applicable state, and its own exit code (R-32 F-7).** A markdown twin has no `\ref`/`\label` targets, so this row does not apply to it. The instrument reports `status: "not_applicable"` and exits **4**, which is deliberately *not* the measurement-failure code **2**: a pipeline that reads every non-zero exit as a failure would otherwise call a healthy markdown draft broken. The row is neither a pass nor a failure, and silence is still not evidence — the run prints the skipped row and its reason.
+
+### Gate-Expand-Citation-Density
+
+**Input** the related-work section (or whatever section places the work against prior art). **Output** its word count and its citation-key count.
+
+**Pass:** at least one citation key. **Fail:** a related-work section with **zero** citation keys. That is a **presence** requirement over the named region and it is derived from no corpus quantile — a word-count floor on related work is satisfied by a section that cites nothing, which is the hole this gate exists to catch. The density distribution itself is measured only in the cryptography corpus and is **whole-paper** scoped: citation keys per 1000 words min **1.108**, first quartile **3.736**, median **4.798**, third quartile **6.199**, median **100.5** keys per paper (census A12). Those figures are **non-binding context** — section-scoped density for this region has no corpus row, and another family's whole-paper quantiles may not be transplanted onto a security-venue section (R-27) — so no security-venue density figure is claimed here and none may be added without a security-side, section-scoped measurement.
+
+**Reported, never a verdict:** inline-math density. The security corpus cannot be measured for it — the papers are PDFs with no LaTeX source — while the cryptography corpus can: tier-A n=62, inline math per 1000 words min **4.700**, first quartile **46.082**, median **54.940**, third quartile **64.373**, with 0 of 62 papers at zero (census A1). Those are **another family's** numbers on a **whole-paper** basis, and they are printed as non-binding context in the instrument's output: quoting them at a security-venue draft would be calibrated on a population the threshold was not measured on, and applying them to a section span would additionally be a scope mismatch (§Scope rule above). The instrument's `math` row prints the count and the reference distribution and **emits no verdict**; a security-venue draft whose formal regions carry no formula at all is a **manual self-check item** — the author records why — never an automatic breach. `crypto-venue-paper-writing` owns the numeric floor for its own family.
 
 ## Policy anchors per venue — verify at execution time
 

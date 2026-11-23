@@ -65,7 +65,7 @@ Measured on the frozen calibration manuscript, the over-breadth is not marginal:
 
 ### Stage 1 — collect candidates
 
-Scan the manuscript source and its markdown twin for the classes above, plus the working-note macro classes. Record `file:line`, the matched text, the class, and ±40 characters of context. Record the per-class counts **for diagnostics only**.
+Scan the manuscript source and its markdown twin for the classes above, plus the working-note macro classes. Record `file:line`, the matched text, the class, and a fixed character window of context (the window size is the scanner's own constant, printed by the tool). Record the per-class counts **for diagnostics only**.
 
 ### Stage 2 — the definition test (mandatory, per candidate)
 
@@ -125,7 +125,7 @@ So the pass condition changed below; the obligation did not. An undefined identi
 
   **The self-scan must apply the same `not-a-token` rule as the manuscript scan, and this is not a formality: the pattern fires on this skill's own vocabulary.** Class 1 matches inside the contract's defect id `D-C1` and inside `D12`, which are exactly the identifiers this file exists to discuss. A self-scan that ignored that would demand that this file stop naming the defects it is about. So a match is excluded as a substring when the character before it is alphanumeric, or when it is preceded by `-` or `_` that is itself preceded by an alphanumeric, or when the character after it is a digit.
 
-  Runnable self-scan, which must print a residual of zero:
+  Runnable self-scan. **Its residual is not zero on the shipped skill, and this file does not claim it is.** The command exits 2 with a non-zero residual, and at the revision this file was written against **every hit in it is a token the skill is *citing* rather than teaching**: census row ids from the R-3-exception list, the contract's rule ids, and the ids of the measurement rows in the structural comparison. None of them is an unadjudicated *identifier*, which is the thing the accounting rule above actually forbids, and each is dispositioned by category in the paragraph above — it is cited vocabulary, not adopted vocabulary. **The honest reading of this command is therefore: no hit may be an unadjudicated identifier, and every hit the residual does print must be dispositioned one by one.** Do not read the residual as a defect count, and do not quote a residual you have not just run: it moves with the number of rows the prose cites, so this file states the property rather than a number.
 
   ```bash
   cd skills-work/crypto-research-agent-skills

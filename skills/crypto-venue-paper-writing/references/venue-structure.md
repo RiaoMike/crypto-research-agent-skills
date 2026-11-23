@@ -56,8 +56,8 @@ The abstract used by strong applied-crypto papers has four moves in sequence. Th
 
 Constraints, each with its rule:
 
-- **The cap is 210 words, not 250** (corpus median, `skills-work/corpus/crypto/statistics.md:121`, n=59). 250 is the corpus *third quartile* and licensed exactly the long tail that made the wordiness defect survive a review. Longer is possible only with the corpus line that licenses it quoted.
-- **Longest sentence at most 40 words** (median, `skills-work/corpus/crypto/statistics.md:124`, n=59).
+- **The cap is the corpus median, not its third quartile** (corpus median, `skills-work/corpus/crypto/statistics.md:121`, n=59; `abstract-words` prints the draft's count against the cap it used — measured on the sample, `193 words vs cap 210 -> ok` — and it does **not** print the quartile, so the quartile being rejected is read from the anchor line rather than from the gate's output). The quartile licensed exactly the long tail that made the wordiness defect survive a review. Longer is possible only with the corpus line that licenses it quoted.
+- **Longest sentence at most the corpus median** (median, `skills-work/corpus/crypto/statistics.md:124`, n=59).
 - **Start with the contribution, not background.** Do not open with "X has attracted significant attention" or "in recent years".
 - **Keep a concrete number in the abstract only if the body carries the same number with its methodology**, and only if it is an *outcome*. Numbers are sparse in the corpus: median 1 numeric token per abstract, and 0.576 of abstracts contain any (`skills-work/corpus/crypto/statistics.md:125`, `skills-work/corpus/crypto/statistics.md:129`). Placement rules: `numeric-placement.md`.
 - **No process or workflow self-reference** in the abstract. See `de-ai-and-style.md`.

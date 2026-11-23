@@ -301,10 +301,30 @@ def judge_lines(text: str, owner_text: str = OWNER_SAMPLE) -> dict[str, object]:
     }
 
 
-def run_self_test() -> int:
+def run_self_test(output: list[str] | None = None) -> int:
     """A checker that cannot fail proves nothing, and a guard proven in one direction is not a
-    guard: mention and use of the same name are exercised in the same run."""
+    guard: mention and use of the same name are exercised in the same run.
+
+    `output`, when given, receives the LABEL of every assertion this run actually executed
+    (t7/F-1) — an enumeration of the run itself rather than a second reading of the source, so a
+    harness can assert the printed total equals the number of assertions performed.
+
+    The total is COUNTED — one entry per assertion actually executed — because the literal
+    `len(cases) + 7` this function used to print had drifted from the code: it reported 13 against
+    the 14 assertions it ran (t7, finding F-1).  `assertions` is what `self-test: N/N` prints, and
+    `self_test_assertion_names()` reads the same call sites out of this file, so the reported count
+    and the executed count cannot disagree again.
+    """
     failures = 0
+    assertions: list[str] = []
+
+    def checked(label: str, ok: bool) -> None:
+        """Account for exactly one assertion.  Every check below goes through here."""
+        assertions.append(label)
+        if output is not None:
+            output.append(label)
+        if not ok:
+            failures += 1
 
     # --- unit level: the resolver itself ------------------------------------------------
     cases = {
@@ -317,17 +337,15 @@ def run_self_test() -> int:
     }
     for label, (name, expected) in cases.items():
         ok, how = resolves(OWNER_SAMPLE, name)
-        if ok != expected:
-            failures += 1
+        checked(label, ok == expected)
         status = "ok" if ok == expected else "NOT DETECTED"
         print(f"  self-test {label:38s} {status} (resolved={ok}, how={how})")
 
     # The alias table must map the legacy name onto a canonical name the owner sample declares,
     # which is what makes the alias path meaningful rather than a bypass.
     alias_ok = all(resolves(OWNER_SAMPLE, canonical)[0] for canonical in set(ALIASES.values()))
+    checked("alias-targets-resolve-in-owner", alias_ok)
     print(f"  self-test {'alias-targets-resolve-in-owner':38s} {'ok' if alias_ok else 'NOT DETECTED'}")
-    if not alias_ok:
-        failures += 1
 
     # --- mention-vs-use guard: BOTH directions in this one run (R-20a.1) ---------------
     mention_result = judge_lines(HISTORICAL_MENTION)
@@ -337,8 +355,7 @@ def run_self_test() -> int:
     print(f"  self-test {'warning-sentence-is-a-mention-not-a-use':38s} "
           f"{'ok' if (mention_admitted and mention_clean) else 'NOT DETECTED'} "
           f"(mentioned={sorted(mention_names)}, unresolved={[u['gate'] for u in mention_result['unresolved']]})")
-    if not (mention_admitted and mention_clean):
-        failures += 1
+    checked("warning-sentence-is-a-mention-not-a-use", mention_admitted and mention_clean)
 
     use_result = judge_lines(HISTORICAL_USE)
     use_names = {u["gate"] for u in use_result["unresolved"]}
@@ -349,12 +366,10 @@ def run_self_test() -> int:
     design_alias_resolved = not any(u["gate"] == "Gate-Expand-Design" for u in use_result["unresolved"])
     print(f"  self-test {'instruction-line-still-FAILs':38s} "
           f"{'ok' if use_fires else 'NOT DETECTED'} (unresolved={sorted(use_names)})")
+    checked("instruction-line-still-FAILs", use_fires)
     print(f"  self-test {'declared-alias-resolves-on-instruction-line':38s} "
           f"{'ok' if design_alias_resolved else 'NOT DETECTED'}")
-    if not use_fires:
-        failures += 1
-    if not design_alias_resolved:
-        failures += 1
+    checked("declared-alias-resolves-on-instruction-line", design_alias_resolved)
 
     # A contrast cue must not silence the gate it recommends: "there is no separate balance gate,
     # the owner folds the reading into `Gate-Expand-Scheme`" warns about the first name only, and
@@ -373,8 +388,7 @@ def run_self_test() -> int:
           f"{'ok' if contrast_ok else 'NOT DETECTED'} "
           f"(mentioned={sorted({m['gate'] for m in contrast_result['mentioned']})}, "
           f"judged_as_use={sorted({u['gate'] for u in contrast_result['used']})})")
-    if not contrast_ok:
-        failures += 1
+    checked("contrast-cue-does-not-silence-the-owner", contrast_ok)
 
     # Same name, no alias declared in the file: a legacy name with no remedy must FAIL, which is
     # what proves the alias path is not a blanket escape hatch.
@@ -383,8 +397,7 @@ def run_self_test() -> int:
     print(f"  self-test {'undeclared-legacy-name-FAILs':38s} "
           f"{'ok' if undeclared_fires else 'NOT DETECTED'} "
           f"(unresolved={sorted({u['gate'] for u in undeclared['unresolved']})})")
-    if not undeclared_fires:
-        failures += 1
+    checked("undeclared-legacy-name-FAILs", undeclared_fires)
 
     # One run must show both verdicts for the SAME name, which is the property the guard is for:
     # the name is excluded where the text warns about it, and simultaneously judged where the text
@@ -394,8 +407,7 @@ def run_self_test() -> int:
     both = ("Gate-Expand-Design" in mention_names and "Gate-Expand-Design" in used_or_failed)
     print(f"  self-test {'same-name-both-directions-one-run':38s} {'ok' if both else 'NOT DETECTED'} "
           f"(mentioned={sorted(mention_names)}, judged_as_use={sorted(used_or_failed)})")
-    if not both:
-        failures += 1
+    checked("same-name-both-directions-one-run", both)
 
     # --- the guard in the real POINTER_PAIRS shape (pointer text -> owner text) ---------
     pointer_text = HISTORICAL_MENTION + HISTORICAL_USE
@@ -406,12 +418,24 @@ def run_self_test() -> int:
         and {u["gate"] for u in judged["unresolved"]} == {"Gate-Expand-Balance", "Gate-Condense-SomethingElse"}
     )
     print(f"  self-test {'mixed-file-splits-mention-from-use':38s} {'ok' if mixed_ok else 'NOT DETECTED'}")
-    if not mixed_ok:
-        failures += 1
+    checked("mixed-file-splits-mention-from-use", mixed_ok)
 
-    total = len(cases) + 7
+    total = len(assertions)          # COUNTED, never computed from a literal (t7, F-1)
     print(f"self-test: {total - failures}/{total} as expected")
     return 1 if failures else 0
+
+
+def self_test_assertion_names() -> list[str]:
+    """The label of every assertion `run_self_test()` executes, obtained by RUNNING it.
+
+    Exists so the count is a fact a harness can check rather than something only the run states:
+    `--list-assertions` prints this enumeration beside the suite's own `N/N`, and the two come
+    from one execution, so they cannot disagree.  (An earlier version re-read the source with a
+    regex, which would have been a second implementation of the same claim; it was replaced.)
+    """
+    executed: list[str] = []
+    run_self_test(output=executed)
+    return executed
 
 
 def check_pairs(skills_root: Path) -> tuple[list[dict], list[dict], list[str], int]:
@@ -465,7 +489,25 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="prove the check can fail, and that a warning sentence is not punished",
     )
+    parser.add_argument(
+        "--list-assertions",
+        action="store_true",
+        help="print one line per assertion --self-test executes, read from this file, and exit 0. "
+             "The printed self-test total is counted from the same call sites, so a harness can "
+             "check the two agree (t7, F-1).",
+    )
     args = parser.parse_args(argv)
+
+    if args.list_assertions:
+        # Run the suite for real and print the assertions it EXECUTED, so the enumeration and the
+        # printed total come from one execution rather than two readings of the source.
+        executed: list[str] = []
+        rc = run_self_test(output=executed)
+        for i, name in enumerate(executed, 1):
+            print(f"{i:3d}  {name}")
+        print(f"assertions: {len(executed)}")
+        print(f"run returned: {rc}")
+        return 0
 
     if args.self_test:
         return run_self_test()
