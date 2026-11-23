@@ -124,6 +124,14 @@ ABBREVIATIONS = (
     "resp.", "approx.", "w.r.t.", "Sect.", "Ch.", "pp.", "vol.",
 )
 HEADING = re.compile(r"^(?P<hashes>#{1,6})\s+(?P<title>.+?)\s*#*\s*$")
+# LaTeX twins: \section / \subsection / \subsubsection headings and the abstract
+# environment. Markdown-only heading matching made every heading-based subcommand
+# fail on a .tex manuscript with "no heading matched" — a measurement failure, not
+# a manuscript defect.
+TEX_HEADING = re.compile(r"^\\(?P<cmd>section|subsection|subsubsection)\*?\{(?P<title>[^}]*)\}")
+TEX_ABSTRACT_BEGIN = re.compile(r"^\s*\\begin\{abstract\}\s*$")
+TEX_ABSTRACT_END = re.compile(r"^\s*\\end\{abstract\}\s*$")
+TEX_KEYWORDS = re.compile(r"^\s*\\keywords\b")
 
 # --- evidence-apparatus patterns (census rows B1/B2, and the crypto reference rows) ----
 CAPTION_BLOCK = re.compile(
@@ -237,6 +245,10 @@ def prose(text: str) -> str:
 
 BULLET_ITEM = re.compile(r"^\s*(?:[-*+]|\d+[.)])\s+")
 BOLD_ITEM = re.compile(r"^\s*(?:[-*+]\s+)?\*\*(?P<label>[^*]{1,160})\*\*")
+# LaTeX run-in labels: a paragraph whose first line opens with \textbf{...}.
+# BOLD_ITEM above is markdown-only, so a .tex twin reported zero bold items even
+# when the paper carried \textbf run-in contribution items.
+TEX_BOLD_ITEM = re.compile(r"^\s*\\textbf\{[^}]{1,160}\}")
 
 
 def contribution_items(text: str, mode: str) -> tuple[list[str], str]:
@@ -252,7 +264,10 @@ def contribution_items(text: str, mode: str) -> tuple[list[str], str]:
         return lines, ("matched" if lines else "unmatched")
     if mode == "bold":
         lines = [line.strip() for line in text.split("\n") if BOLD_ITEM.match(line)]
-        return lines, ("matched" if lines else "unmatched")
+        if lines:
+            return lines, "matched"
+        tex_blocks = [b.strip() for b in paragraphs(text) if TEX_BOLD_ITEM.match(b)]
+        return tex_blocks, ("matched" if tex_blocks else "unmatched")
     if mode == "paragraph":
         blocks = paragraphs(text)
         return blocks, ("matched" if blocks else "unmatched")
@@ -263,6 +278,9 @@ def contribution_items(text: str, mode: str) -> tuple[list[str], str]:
         bolds = [line.strip() for line in text.split("\n") if BOLD_ITEM.match(line)]
         if bolds:
             return bolds, "matched"
+        tex_blocks = [b.strip() for b in paragraphs(text) if TEX_BOLD_ITEM.match(b)]
+        if tex_blocks:
+            return tex_blocks, "matched"
         blocks = paragraphs(text)
         return blocks, ("matched" if blocks else "unmatched")
     return [], "unmatched"
@@ -288,6 +306,15 @@ def parse_sections(text: str) -> list[tuple[int, str, int, int]]:
         match = HEADING.match(line)
         if match:
             offsets.append((len(match.group("hashes")), match.group("title"), position))
+        else:
+            tex = TEX_HEADING.match(line)
+            if tex:
+                level = {"section": 2, "subsection": 3, "subsubsection": 4}[tex.group("cmd")]
+                offsets.append((level, tex.group("title"), position))
+            elif TEX_ABSTRACT_BEGIN.match(line):
+                offsets.append((2, "Abstract", position + len(line) + 1))
+            elif TEX_KEYWORDS.match(line) or TEX_ABSTRACT_END.match(line):
+                offsets.append((2, "__end_abstract__", position))
         position += len(line) + 1
     offsets.append((0, "__end__", position))
     result: list[tuple[int, str, int, int]] = []

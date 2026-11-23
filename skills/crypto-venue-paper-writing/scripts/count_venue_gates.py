@@ -755,6 +755,10 @@ STYLE_PER_ITEM_CAP = 72   # cross-instrument comparison figure only; NOT a venue
                           # threshold (the venue per-item cap is BULLET_WORDS_CAP)
 BULLET_ITEM = re.compile(r"^\s*(?:[-*+]|\d+[.)])\s+")
 BOLD_ITEM = re.compile(r"^\s*(?:[-*+]\s+)?\*\*(?P<label>[^*]{1,160})\*\*")
+# LaTeX run-in labels: a paragraph whose first line opens with \textbf{...}.
+# BOLD_ITEM above is markdown-only, so a LaTeX twin reported contributions-items
+# as unmatched even when the paper has bold run-in contribution items.
+TEX_BOLD_ITEM = re.compile(r"^\s*\\textbf\{[^}]{1,160}\}")
 ITEM_MODES = ("bullet", "bold", "paragraph", "any", "none")
 
 
@@ -799,7 +803,11 @@ def contribution_items(text: str, mode: str) -> tuple[list[str], str]:
         return lines, ("matched" if lines else "unmatched")
     if mode == "bold":
         lines = [l.strip() for l in text.split("\n") if BOLD_ITEM.match(l)]
-        return lines, ("matched" if lines else "unmatched")
+        if lines:
+            return lines, "matched"
+        blocks = [b.strip() for b in re.split(r"\n\s*\n", text) if b.strip()]
+        tex_blocks = [b for b in blocks if TEX_BOLD_ITEM.match(b)]
+        return tex_blocks, ("matched" if tex_blocks else "unmatched")
     if mode == "paragraph":
         blocks = [b for b in re.split(r"\n\s*\n", text) if b.strip()]
         return blocks, ("matched" if blocks else "unmatched")
@@ -811,6 +819,9 @@ def contribution_items(text: str, mode: str) -> tuple[list[str], str]:
         if bolds:
             return bolds, "matched"
         blocks = [b for b in re.split(r"\n\s*\n", text) if b.strip()]
+        tex_blocks = [b.strip() for b in blocks if TEX_BOLD_ITEM.match(b)]
+        if tex_blocks:
+            return tex_blocks, "matched"
         return blocks, ("matched" if blocks else "unmatched")
     return [], "unmatched"
 
