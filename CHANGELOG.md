@@ -2,6 +2,43 @@
 
 All notable changes are documented here.
 
+## Unreleased — 2026-11-24
+
+Fixes found by a controlled end-to-end evaluation on a held-out security-venue paper
+(read -> outline -> write -> blind review), plus two structural gaps the review surfaced.
+
+- **Instrument contract.** `ccs-writing-style/scripts/count_prose_gates.py` now prints the
+  measurement failure on stderr and exits **2** for "no heading matched" and for a malformed
+  `--section` spec, matching its documented exit-code contract (previously
+  `raise SystemExit(str)` returned exit 1). `--self-test` remains 47/47.
+- **Repair-diff re-review.** `crypto-paper-writing/references/authoring-workflow.md` gains a
+  mandatory repair-diff audit: every gate-driven repair emits a four-list diff (cite keys /
+  formal statements, round counts and parameters / title-abstract claim wording / numbers),
+  and a non-empty diff forces a `crypto-theorem-review` and a `crypto-paper-review` re-review
+  with a required `regressions introduced` field. This closes the failure mode where a repair
+  passed the gate while silently changing the theorem's round index.
+- **Condensation may not strengthen a claim.** `ccs-writing-style/references/compression-and-expansion-gates.md`
+  adds `Gate-Condense-Claim-Preservation` (modality, quantifiers, scope, and claim object
+  preserved; delete/merge/downgrade only), and the abstract gate points to it.
+  `crypto-venue-paper-writing/references/compression-rules.md` cites the same rule for the
+  cryptography family. Observed defect: "commits once to the message" compressed to "never
+  commits to the codeword" while the construction still commits codeword columns.
+- **Section-order contract.** New `ccs-writing-style/references/section-order.md`: the
+  CCS/S&P/NDSS default body order, the banned structure forms (Roadmap subsection, standalone
+  numbered Open Problems, a central result named Claim, bare work-plan labels), and the
+  conformance check to record before freeze. Wired into `ccs-writing-style/SKILL.md`.
+- **Planning-ID scan.** `crypto-venue-paper-writing/references/de-ai-and-style.md` narrows the
+  defined-label exemption: an inline `(A1)`-`(A4)` assumption list is a class-1 style finding
+  even when defined, unless the label lives in a standard theorem-like environment; the grep
+  checklist gains `\([A-Z][0-9]\)`.
+- **De-AI freeze gate.** `authoring-workflow.md` Step 7 requires three freeze artifacts: the
+  venue section-order conformance check, the de-AI grep output (hits and waivers), and named
+  `assumption` environments.
+
+Evidence: the evaluation workspace's `report/FINAL.md` section 14 and
+`skill-optimization/APPLIED*.md`; raw gate transcripts in that workspace's
+`submission/supplementary/instruments/`.
+
 ## 0.3.0 — 2026-09-17
 
 Two opposite defects drove this release: the places that must be condensed (the abstract, the contribution list) were wordy, and the places that must be detailed (the technical overview, the concrete construction) were thin. Both are now decided by measured thresholds instead of by taste.
